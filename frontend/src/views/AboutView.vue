@@ -1,10 +1,10 @@
 <template>
     <div class="row">
         <div class="col-3">
-            <div ref="pagesContainer" class="col-3 pagesContainer gaegu-bold p-5">
+            <div ref="pageCanvas" class="col-3 pageCanvas gaegu-bold p-5">
                 <!-- @click="saveAsImage($event)" -->
                 <!-- <img src="@/assets/logo.png" /> -->
-                <p class="pt-5 ps-3">{{ randomTxt }}</p>
+                <p class="pt-5 ps-2">{{ randomTxt }}</p>
             </div>
         </div>
         <div class="col-9">
@@ -17,7 +17,7 @@
                     <button @click="flipbook.flipLeft">이전</button>
                     <button @click="flipbook.flipRight">다음</button>
                     <!-- <button @click="addPage">페이지 추가</button> -->
-                    <button @click="saveAsImage">저장한 페이지 추가</button>
+                    <button @click="다음줄거리요청()">다음페이지</button>
                 </div>
             </flipbook>
         </div>
@@ -42,24 +42,23 @@ export default {
     created() {
         this.generateRandomText();
         // 키보드 이벤트 리스너 추가
-        window.addEventListener('keydown', this.handleKeyDown);
+        // window.addEventListener('keydown', this.handleKeyDown);
     },
     beforeUnmount() {
         // 컴포넌트가 언마운트될 때 키보드 이벤트 리스너 제거
-        window.removeEventListener('keydown', this.handleKeyDown);
+        // window.removeEventListener('keydown', this.handleKeyDown);
     },
     methods: {
-        ...mapActions(['saveAsImage', 'generateRandomText', 'saveAsImageAction']),
-        handleKeyDown(event) {
-            if (event.key === 's' || event.key === 'S') {
-                // 's' 키를 눌렀을 때
-                const element = this.$refs.pagesContainer;
-                this.saveAsImage(element);
-            }
-        },
-        async saveAsImage() {
-            const element = this.$refs.pagesContainer;
-            await this.saveAsImageAction(element);
+        ...mapActions(['saveAsImage', 'generateRandomText', '다음줄거리요청액션']),
+        // handleKeyDown(event) {
+        //     if (event.key === 's' || event.key === 'S') {
+        //         // 's' 키를 눌렀을 때
+        //         const element = this.$refs.pageCanvas;
+        //         this.saveAsImage(element);
+        //     }
+        // },
+        async 다음줄거리요청() {
+            await this.다음줄거리요청액션(this.$refs.pageCanvas);
         },
     },
 };
@@ -76,7 +75,7 @@ export default {
 .bounding-box {
     box-shadow: 0 15px 15px rgba(0, 0, 0, 0.5);
 }
-.pagesContainer {
+.pageCanvas {
     font-size: 2rem;
     color: black;
     width: 480px;
