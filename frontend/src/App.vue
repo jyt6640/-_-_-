@@ -59,10 +59,21 @@ export default {
             const element = this.$refs.pagesContainer; // pagesContainer라는 ref 속성을 가진 HTML 요소를 가져옴
             const canvas = await html2canvas(element); // 비동기로 수행, 라이브러리 사용하여 가져온 HTML 요소를 캔버스화
             const dataURL = canvas.toDataURL('image/png'); // 변환된 캔버스를 PNG 이미지로 변환
-            const link = document.createElement('a'); // a 태그 요소 생성
-            link.href = dataURL; // a 태그의 href에 이미지 URL 삽입
-            link.download = 'pages.png'; // a태그의 다운로드에 파일 이름 설정
-            link.click(); // 클릭하여 다운로드
+
+            // 이미지 a태그 활용하여 다운로드 (백엔드 연결 전 임시 로직)
+            // const link = document.createElement('a'); // a 태그 요소 생성
+            // link.href = dataURL; // a 태그의 href에 이미지 URL 삽입
+            // link.download = 'pages.png'; // a태그의 다운로드에 파일 이름 설정
+            // link.click(); // 클릭하여 다운로드
+
+            // 이미지 데이터를 서버로 전송
+            try {
+                await axios.post('http://localhost:3000/save-image', { imageData: dataURL });
+                alert('이미지 저장 성공');
+            } catch (error) {
+                console.error('이미지 저장 실패:', error);
+                alert('이미지 저장 실패');
+            }
         },
         generateRandomText() {
             const randomTexts = [
@@ -113,7 +124,6 @@ export default {
     color: black;
     width: 480px;
     height: 640px;
-    border: red 1px solid;
     background-image: url('@/assets/paper.jpg'); /* 타일 PNG 이미지 경로 */
     background-size: contain; /* 타일 이미지를 원래 크기로 사용 */
     overflow: hidden; /* 넘치는 텍스트 숨김 */
