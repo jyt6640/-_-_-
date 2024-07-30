@@ -1,9 +1,8 @@
 <template>
     <div id="app" class="row">
-        <div ref="pagesContainer" class="col-3 pagesContainer" style="" @click="saveAsImage">
+        <div ref="pagesContainer" class="col-3 pagesContainer gaegu-bold p-5" style="" @click="saveAsImage">
             <!-- <img src="@/assets/logo.png" /> -->
-            {{ pages }}
-            {{ randomTxt }}
+            <p class="pt-5 ps-3">{{ randomTxt }}</p>
         </div>
         <div class="col-9">
             <flipbook class="flipbook" :pages="pages" v-slot="flipbook" :zooms="null" :flipDuration="2000" :centering="true" :dragToFlip="false" :singlePage="false">
@@ -45,6 +44,9 @@ export default {
             ],
         };
     },
+    created() {
+        this.generateRandomText();
+    },
     methods: {
         addPage() {
             const newId1 = this.pages.length + 1;
@@ -63,7 +65,15 @@ export default {
             link.click(); // 클릭하여 다운로드
         },
         generateRandomText() {
-            const randomTexts = ['Hello World!', 'Random Text 1', 'Lorem Ipsum', 'Sample Text', 'Vue.js is awesome!', 'Random String', 'Text Generator'];
+            const randomTexts = [
+                '옛날 옛적에 토끼 선생님이 살고 있었어요.',
+                '토끼 선생님은 매일 아침 일찍 일어나 산책을 하곤 했어요.',
+                '산책을 하면서 토끼 선생님은 산과 들의 아름다운 풍경을 즐기곤 했어요.',
+                '어느 날 토끼 선생님은 산책을 하다가 큰 나무 밑에 앉아 쉬고 있었어요.',
+                '그때 토끼 선생님은 누군가가 뒤에서 소리를 지르는 것을 들었어요.',
+                '토끼 선생님은 뒤를 돌아보았어요.',
+                '그러자 거북이가 뒤에서 소리치며 달려오고 있었어요.',
+            ];
             // Math.random() 0~1 사이의 생성
             const randomIndex = Math.floor(Math.random() * randomTexts.length); // 0~1 사이의 난수를 randomTexts의 길이 (7개 = 7)만큼 곱하여 Math.floor로 소수점 버림
             this.randomTxt = randomTexts[randomIndex];
@@ -99,12 +109,35 @@ export default {
     box-shadow: 0 15px 15px rgba(0, 0, 0, 0.5);
 }
 .pagesContainer {
-    font-size: 1rem;
+    font-size: 2rem;
     color: black;
     width: 480px;
     height: 640px;
     border: red 1px solid;
     background-image: url('@/assets/paper.jpg'); /* 타일 PNG 이미지 경로 */
     background-size: contain; /* 타일 이미지를 원래 크기로 사용 */
+    overflow: hidden; /* 넘치는 텍스트 숨김 */
+    white-space: pre-wrap;
+    line-break: loose; /* 한국어 문장의 자연스러운 줄바꿈 */
+    word-break: keep-all; /* 어절 단위로 줄바꿈 */
+    line-height: 2; /* 줄 간격을 1.5배로 설정 */
+    letter-spacing: -0.1rem;
+}
+.gaegu-bold {
+    font-family: 'Gaegu', sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.gaegu-regular {
+    font-family: 'Gaegu', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.gaegu-light {
+    font-family: 'Gaegu', sans-serif;
+    font-weight: 300;
+    font-style: normal;
 }
 </style>
