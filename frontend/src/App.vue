@@ -24,6 +24,7 @@
 <script>
 import Flipbook from 'flipbook-vue';
 import html2canvas from 'html2canvas';
+import axios from 'axios';
 
 export default {
     components: {
@@ -58,7 +59,7 @@ export default {
         async saveAsImage() {
             const element = this.$refs.pagesContainer; // pagesContainer라는 ref 속성을 가진 HTML 요소를 가져옴
             const canvas = await html2canvas(element); // 비동기로 수행, 라이브러리 사용하여 가져온 HTML 요소를 캔버스화
-            const dataURL = canvas.toDataURL('image/png'); // 변환된 캔버스를 PNG 이미지로 변환
+            const imageData = canvas.toDataURL('image/png'); // 변환된 캔버스를 PNG 이미지로 변환
 
             // 이미지 a태그 활용하여 다운로드 (백엔드 연결 전 임시 로직)
             // const link = document.createElement('a'); // a 태그 요소 생성
@@ -66,9 +67,9 @@ export default {
             // link.download = 'pages.png'; // a태그의 다운로드에 파일 이름 설정
             // link.click(); // 클릭하여 다운로드
 
-            // 이미지 데이터를 서버로 전송
+            // 이미지 데이터를 서버로 전송, 파라미터는 imageData
             try {
-                await axios.post('http://localhost:3000/save-image', { imageData: dataURL });
+                await axios.post('http://localhost:3000/save-image', { imageData });
                 alert('이미지 저장 성공');
             } catch (error) {
                 console.error('이미지 저장 실패:', error);
