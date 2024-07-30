@@ -17,7 +17,7 @@
                     <button @click="flipbook.flipLeft">이전</button>
                     <button @click="flipbook.flipRight">다음</button>
                     <!-- <button @click="addPage">페이지 추가</button> -->
-                    <button @click="addSaveAsImage">저장한 페이지 추가</button>
+                    <button @click="saveAsImage">저장한 페이지 추가</button>
                 </div>
             </flipbook>
         </div>
@@ -41,7 +41,6 @@ export default {
     },
     created() {
         this.generateRandomText();
-
         // 키보드 이벤트 리스너 추가
         window.addEventListener('keydown', this.handleKeyDown);
     },
@@ -50,13 +49,17 @@ export default {
         window.removeEventListener('keydown', this.handleKeyDown);
     },
     methods: {
-        ...mapActions(['saveAsImage', 'generateRandomText', 'addSaveAsImage']),
+        ...mapActions(['saveAsImage', 'generateRandomText', 'saveAsImageAction']),
         handleKeyDown(event) {
             if (event.key === 's' || event.key === 'S') {
                 // 's' 키를 눌렀을 때
                 const element = this.$refs.pagesContainer;
                 this.saveAsImage(element);
             }
+        },
+        async saveAsImage() {
+            const element = this.$refs.pagesContainer;
+            await this.saveAsImageAction(element);
         },
     },
 };
