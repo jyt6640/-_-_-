@@ -1,59 +1,84 @@
 import { createStore } from 'vuex';
 import axios from 'axios';
 import html2canvas from 'html2canvas';
+import { nextTick } from 'vue';
 
 export default createStore({
     state: {
+        선택한책고유번호: 999,
+        현재페이지번호: 0,
+        선택한책줄거리: [{ id: 0, 줄거리: null, 삽화: 'books/1.jpg', 캔버스: 'books/2.jpg', 다음선택지: [] }],
         pages: ['books/1.jpg', 'books/2.jpg'],
-        randomTxt: '',
-        nextFileName: 'pages0', // 추가된 파일 이름 상태
     },
     mutations: {
-        SET_RANDOM_TEXT(state, text) {
-            state.randomTxt = text;
+        현재페이지번호증가(state) {
+            state.현재페이지번호 += 1;
         },
-        ADD_PAGE(state, page) {
-            state.pages.push(page);
+        다음페이지정보추가(state, 다음페이지) {
+            state.선택한책줄거리.push(다음페이지);
+            this.commit('업데이트_배열');
+            this.commit('현재페이지번호증가');
+            console.log('선택한책줄거리', state.선택한책줄거리);
         },
-        SET_NEXT_FILE_NAME(state, fileName) {
-            state.nextFileName = fileName;
-        },
-        INCREMENT_FILE_NAME(state) {
-            const currentNumber = parseInt(state.nextFileName.match(/\d+$/)[0]);
-            state.nextFileName = `pages${currentNumber + 1}`;
+        업데이트_배열(state) {
+            const 마지막페이지 = state.선택한책줄거리[state.선택한책줄거리.length - 1];
+
+            if (마지막페이지) {
+                state.pages.push(마지막페이지.삽화);
+                state.pages.push(마지막페이지.캔버스);
+
+                const 다음페이지번호 = 마지막페이지.id + 1;
+                const 다음페이지 = state.선택한책줄거리.find((page) => page.id === 다음페이지번호);
+
+                if (다음페이지) {
+                    state.pages.push(다음페이지.삽화);
+                    state.pages.push(다음페이지.캔버스);
+                }
+            }
         },
     },
     actions: {
-        async saveAsImageAction(context, element) {
+        async 다음줄거리요청액션(context, { 선택한책고유번호, 다음페이지번호 }) {
             try {
-                const canvas = await html2canvas(element); // html2canvas가 해결될 때까지 기다립니다.
+                // 첫 번째 요청: 다음 줄거리와 선택지 가져오기
+                const 결과1 = await axios.post('http://localhost:3000/nextTxt', { 다음페이지번호 });
+                const 다음줄거리 = 결과1.data.다음줄거리;
+                const 다음선택지 = 결과1.data.다음선택지;
+                const 새로운페이지번호 = 결과1.data.다음페이지번호;
+
+                // 다음 줄거리를 페이지 캔버스에 업데이트
+                const 페이지캔버스 = document.querySelector('.pageCanvas');
+                페이지캔버스.innerHTML = 다음줄거리;
+
+                // DOM 업데이트를 기다립니다.
+                await nextTick();
+
+                const canvas = await html2canvas(페이지캔버스);
                 const imageData = canvas.toDataURL('image/png');
-                const response = await axios.post('http://localhost:3000/save-image', { imageData }); // axios 요청이 해결될 때까지 기다립니다.
-                const savedFileName = response.data.match(/이미지 저장 성공: (.+)$/)[1];
-                console.log('이미지 저장 성공:', savedFileName);
+                // 두 번째 요청: 캔버스 이미지 저장
+                const 결과2 = await axios.post('http://localhost:3000/save-canvas', { 선택한책고유번호, 새로운페이지번호, imageData });
+                const 결과파일명 = 결과2.data.filename;
+                const newSaveAsPage = process.env.BASE_URL + `books/${결과파일명}`;
 
-                const newPage3 = 'https://picsum.photos/480/640?id=' + Math.random();
-                const newSaveAsPage = process.env.BASE_URL + `books/${savedFileName}`;
-                context.commit('ADD_PAGE', newPage3);
-                context.commit('ADD_PAGE', newSaveAsPage);
+                // 세 번째 요청: 가라삽화 저장
+                const 결과3 = await axios.post('http://localhost:3000/nextImg', { 선택한책고유번호, 새로운페이지번호 });
+                const 결과파일명2 = 결과3.data.filename;
+                const newSaveAsPage2 = process.env.BASE_URL + `books/${결과파일명2}`;
 
-                context.dispatch('generateRandomText');
+                // 다음 페이지 정보 생성
+                const 다음페이지 = {
+                    id: 새로운페이지번호,
+                    줄거리: 다음줄거리,
+                    다음선택지: 다음선택지,
+                    삽화: newSaveAsPage2,
+                    캔버스: newSaveAsPage,
+                };
+
+                // 다음 페이지 정보를 상태에 추가
+                context.commit('다음페이지정보추가', 다음페이지);
             } catch (error) {
-                console.error('이미지 저장 실패:', error);
+                console.error('오류 발생:', error);
             }
-        },
-        generateRandomText(context) {
-            const randomTexts = [
-                '옛날 옛적에 토끼 선생님이 살고 있었어요.',
-                '토끼 선생님은 매일 아침 일찍 일어나 산책을 하곤 했어요.',
-                '산책을 하면서 토끼 선생님은 산과 들의 아름다운 풍경을 즐기곤 했어요.',
-                '어느 날 토끼 선생님은 산책을 하다가 큰 나무 밑에 앉아 쉬고 있었어요.',
-                '그때 토끼 선생님은 누군가가 뒤에서 소리를 지르는 것을 들었어요.',
-                '토끼 선생님은 뒤를 돌아보았어요.',
-                '그러자 거북이가 뒤에서 소리치며 달려오고 있었어요.',
-            ];
-            const randomIndex = Math.floor(Math.random() * randomTexts.length);
-            context.commit('SET_RANDOM_TEXT', randomTexts[randomIndex]);
         },
     },
 });

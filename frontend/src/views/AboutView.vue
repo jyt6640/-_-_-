@@ -4,7 +4,7 @@
             <div ref="pageCanvas" class="col-3 pageCanvas gaegu-bold p-5">
                 <!-- @click="saveAsImage($event)" -->
                 <!-- <img src="@/assets/logo.png" /> -->
-                <p class="pt-5 ps-2">{{ randomTxt }}</p>
+                <p class="pt-5 ps-2">{{ 현재페이지줄거리 }}</p>
             </div>
         </div>
         <div class="col-9">
@@ -17,18 +17,20 @@
                     <button @click="flipbook.flipLeft">이전</button>
                     <button @click="flipbook.flipRight">다음</button>
                     <!-- <button @click="addPage">페이지 추가</button> -->
-                    <button @click="다음줄거리요청()">다음페이지</button>
+                    <button @click="다음줄거리요청(flipbook)">다음페이지</button>
                 </div>
             </flipbook>
         </div>
     </div>
     <div class="row" style="color: black">
         {{ pages }}
+        선택한책고유번호 {{ 선택한책고유번호 }} 현재페이지번호 {{ 현재페이지번호 }}
     </div>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex';
+import { nextTick } from 'vue';
 import Flipbook from 'flipbook-vue';
 
 export default {
@@ -37,10 +39,16 @@ export default {
     },
     name: 'App',
     computed: {
-        ...mapState(['pages', 'randomTxt']),
+        ...mapState(['선택한책줄거리', '선택한책고유번호', '현재페이지번호', 'pages']),
+        현재페이지줄거리() {
+            if (this.현재페이지번호 > 0) {
+                const 현재페이지 = this.선택한책줄거리.find((page) => page.id === this.현재페이지번호);
+                return 현재페이지 ? 현재페이지.줄거리 : '';
+            }
+            return '';
+        },
     },
     created() {
-        this.generateRandomText();
         // 키보드 이벤트 리스너 추가
         // window.addEventListener('keydown', this.handleKeyDown);
     },
@@ -57,8 +65,15 @@ export default {
         //         this.saveAsImage(element);
         //     }
         // },
-        async 다음줄거리요청() {
-            await this.다음줄거리요청액션(this.$refs.pageCanvas);
+        async 다음줄거리요청(flipbook) {
+            await this.다음줄거리요청액션({
+                다음페이지번호: this.현재페이지번호 + 1,
+                // 페이지캔버스: this.$refs.pageCanvas,
+                선택한책고유번호: this.선택한책고유번호,
+            });
+            await nextTick(() => {
+                flipbook.flipRight();
+            });
         },
     },
 };
