@@ -7,38 +7,32 @@ export default createStore({
     state: {
         선택한책고유번호: 999,
         현재페이지번호: 0,
+        마지막페이지번호: 0,
         선택한책줄거리: [{ id: 0, 줄거리: null, 삽화: 'books/1.jpg', 캔버스: 'books/2.jpg', 다음선택지: [] }],
         pages: ['books/1.jpg', 'books/2.jpg'],
+        isProcessing: false,
     },
     mutations: {
+        업데이트처리상태(state, status) {
+            state.isProcessing = status;
+        },
         현재페이지번호증가(state) {
             state.현재페이지번호 += 1;
         },
+        이전페이지뮤테이션(state) {
+            state.현재페이지번호 -= 1;
+        },
         다음페이지정보추가(state, 다음페이지) {
             state.선택한책줄거리.push(다음페이지);
-            this.commit('업데이트_배열');
+            state.pages.push(다음페이지.삽화);
+            state.pages.push(다음페이지.캔버스);
+            state.마지막페이지번호 += 1;
             this.commit('현재페이지번호증가');
-            console.log('선택한책줄거리', state.선택한책줄거리);
-        },
-        업데이트_배열(state) {
-            const 마지막페이지 = state.선택한책줄거리[state.선택한책줄거리.length - 1];
-
-            if (마지막페이지) {
-                state.pages.push(마지막페이지.삽화);
-                state.pages.push(마지막페이지.캔버스);
-
-                const 다음페이지번호 = 마지막페이지.id + 1;
-                const 다음페이지 = state.선택한책줄거리.find((page) => page.id === 다음페이지번호);
-
-                if (다음페이지) {
-                    state.pages.push(다음페이지.삽화);
-                    state.pages.push(다음페이지.캔버스);
-                }
-            }
         },
     },
     actions: {
         async 다음줄거리요청액션(context, { 선택한책고유번호, 다음페이지번호 }) {
+            context.commit('업데이트처리상태', true); // 처리 중 상태 true로 설정
             try {
                 // 첫 번째 요청: 다음 줄거리와 선택지 가져오기
                 const 결과1 = await axios.post('http://localhost:3000/nextTxt', { 다음페이지번호 });
@@ -78,6 +72,8 @@ export default createStore({
                 context.commit('다음페이지정보추가', 다음페이지);
             } catch (error) {
                 console.error('오류 발생:', error);
+            } finally {
+                context.commit('업데이트처리상태', false);
             }
         },
     },
