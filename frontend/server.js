@@ -13,6 +13,35 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.post('/save_image/', async (req, res) => {
+    const { 선택한책고유번호, 다음페이지번호, image_data } = req.body;
+
+    if (!image_data) {
+        return res.status(400).send('Image data is required');
+    }
+    const filename = `${선택한책고유번호}-${다음페이지번호}-1.png`;
+    const filePath = path.join(__dirname, 'public', 'books', filename);
+
+    // Base64 인코딩된 이미지 데이터를 Buffer로 변환
+    const base64Data = image_data.replace(/^data:image\/png;base64,/, ''); // 파일 형식에 맞게 조정 필요
+    const buffer = Buffer.from(base64Data, 'base64');
+
+    try {
+        // 기존 파일이 있으면 삭제
+        if (fs.existsSync(filePath)) {
+            await fs.promises.unlink(filePath);
+            console.log('기존 파일 삭제:', filePath);
+        }
+        console.log('파일 저장:', filePath);
+
+        await fs.promises.writeFile(filePath, buffer, 'base64'); //
+        res.json({ message: '이미지 저장 성공', filename: filename });
+    } catch (err) {
+        console.error('이미지 저장 중 오류 발생:', err);
+        res.status(500).send('이미지 저장 실패');
+    }
+});
+
 app.post('/nextTxt', (req, res) => {
     // 가라 줄거리 배열
     const 줄거리들 = ['토끼 선생님은 매일 아침 일찍 일어나 산책을 하곤 했어요.', '토끼 선생님은 아침을 먹고 산책을 나갔어요.', '산책 도중에 토끼 선생님은 아름다운 꽃밭을 발견했어요.', '토끼 선생님은 산책을 하다가 친구를 만났어요.', '토끼 선생님은 산책을 하며 자연의 소리를 즐겼어요.'];
@@ -34,6 +63,7 @@ app.post('/save-canvas', async (req, res) => {
     const 선택한책고유번호 = req.body.선택한책고유번호;
     const 다음페이지번호 = req.body.새로운페이지번호;
     const 이미지데이터 = req.body.imageData;
+
     const base64Data = 이미지데이터.replace(/^data:image\/png;base64,/, '');
     const dirPath = path.join(__dirname, 'public', 'books');
     const uniqueFilename = `${선택한책고유번호}-${다음페이지번호}-2.png`;
@@ -46,13 +76,12 @@ app.post('/save-canvas', async (req, res) => {
             console.log('기존 파일 삭제:', filePath);
         }
 
-        console.log('파일 저장:', filePath);
+        console.log('캔버스 저장:', filePath);
 
         // base64 데이터를 파일로 변환하여 지정된 경로에 저장
         await fs.promises.writeFile(filePath, base64Data, 'base64');
-
-        // 응답 헤더 설정
         res.json({ message: '이미지 저장 성공', filename: uniqueFilename });
+        // 응답 헤더 설정
     } catch (err) {
         console.error('이미지 저장 중 오류 발생:', err);
         res.status(500).send('이미지 저장 실패');
@@ -65,7 +94,7 @@ app.post('/nextImg', async (req, res) => {
     const 가라삽화 = 'https://picsum.photos/480/640?id=' + Math.random();
     const filename = `${선택한책고유번호}-${다음페이지번호}-1.png`;
     const filePath = path.join(__dirname, 'public', 'books', filename);
-
+    console.log('파일이름', filename);
     try {
         // 기존 파일이 있으면 삭제
         if (fs.existsSync(filePath)) {
@@ -84,7 +113,7 @@ app.post('/nextImg', async (req, res) => {
         const buffer = Buffer.from(response.data, 'binary');
         await fs.promises.writeFile(filePath, buffer);
 
-        console.log('파일 저장:', filePath);
+        console.log('가라삽화 저장:', filePath);
         res.json({ message: '이미지 저장 성공', filename });
     } catch (err) {
         console.error('이미지 저장 중 오류 발생:', err);

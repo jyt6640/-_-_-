@@ -1,6 +1,6 @@
 <template>
     <div class="ps-2">
-        <div title="Button border purple" class="button btnFloat btnPurple">Float</div>
+        <div title="Button border purple" class="button btnFloat btnPurple" style="margin-top: 55px"></div>
         <div class="clear"></div>
     </div>
 </template>
@@ -59,7 +59,7 @@ div.button {
     display: block;
     position: relative;
     float: left;
-    width: 120px;
+    width: 200px;
     padding: 0;
     margin: 10px 20px 10px 0;
     font-weight: 600;
@@ -83,7 +83,7 @@ div.button {
 }
 
 .btnPurple {
-    background: #a74982;
+    background: #bb00ff;
 }
 /* FLOAT */
 .btnFloat {
@@ -97,7 +97,7 @@ div.button {
     position: absolute;
     top: 0;
     left: 0;
-    width: 120px;
+    width: 300px;
     height: 50px;
     border-radius: 5px;
     transition: all 0.2s;
@@ -116,7 +116,7 @@ div.button {
 }
 
 .btnPurple.btnFloat:before {
-    background: #8d336a;
+    background: #bb00ff;
 }
 
 .btnFloat:before {

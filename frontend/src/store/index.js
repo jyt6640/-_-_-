@@ -31,6 +31,46 @@ export default createStore({
         },
     },
     actions: {
+        async API테스트액션(context, { 선택한책고유번호, 새로운페이지번호 }) {
+            try {
+                const 다음페이지번호 = 새로운페이지번호;
+                const 데이터 = {
+                    prompt: 'A majestic ancient dragon with black scales and golden eyes, standing atop a high mountain nest, surrounded by swirling clouds and wind. The dragon, wise and solitary, senses a dark omen looming over the world.',
+                };
+                const 결과 = await axios.post('http://220.69.241.62:8083/generate_image/', 데이터, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                // 이미지 데이터 추출
+                const imageData = 결과.data.image_data;
+                //console.log('API 테스트 결과:', imageData);
+
+                // 백엔드 서버로 이미지 데이터 전송
+                const 저장결과 = await axios.post(
+                    'http://localhost:3000/save_image/',
+                    {
+                        선택한책고유번호, // 선택한 책 고유 번호
+                        다음페이지번호, // 다음 페이지 번호
+                        image_data: imageData, // 생성된 이미지 데이터
+                    },
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    }
+                );
+                console.log('이미지 데이터가 백엔드 서버로 전송되었습니다.');
+
+                if (저장결과 && 저장결과.data && 저장결과.data.filename) {
+                    return 저장결과.data.filename;
+                } else {
+                    throw new Error('Filename is not returned from save_image API');
+                }
+            } catch (error) {
+                console.error('API 테스트 오류:', error);
+            }
+        },
         async 다음줄거리요청액션(context, { 선택한책고유번호, 다음페이지번호 }) {
             try {
                 // 첫 번째 요청: 다음 줄거리와 선택지 가져오기
@@ -54,8 +94,8 @@ export default createStore({
                 const newSaveAsPage = process.env.BASE_URL + `books/${결과파일명}`;
 
                 // 세 번째 요청: 가라삽화 저장
-                const 결과3 = await axios.post('http://localhost:3000/nextImg', { 선택한책고유번호, 새로운페이지번호 });
-                const 결과파일명2 = 결과3.data.filename;
+                const 결과파일명2 = await context.dispatch('API테스트액션', { 선택한책고유번호, 새로운페이지번호 });
+                //const 결과3 = await axios.post('http://localhost:3000/nextImg', { 선택한책고유번호, 새로운페이지번호 });
                 const newSaveAsPage2 = process.env.BASE_URL + `books/${결과파일명2}`;
 
                 // 다음 페이지 정보 생성

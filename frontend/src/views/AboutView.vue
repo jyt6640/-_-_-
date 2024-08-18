@@ -1,9 +1,7 @@
 <template>
+    <button @click="API테스트()"></button>
     <div v-if="다음줄거리로딩상태 == true" style="position: absolute; top: 38%; left: 48.72%; z-index: 2">
         <BookLoader />
-    </div>
-    <div>
-        <ButtonTwo />
     </div>
     <div class="row">
         <div class="col-3" style="position: absolute; left: -9999px">
@@ -21,10 +19,18 @@
                 </div>
                 <div class="flipbook-head" style="position: absolute; top: 14%; left: 50.5%; z-index: 2">
                     <transition name="fade">
-                        <button v-if="!버튼비활성화상태" @click="이전(flipbook)">이전페이지</button>
+                        <button v-if="!버튼비활성화상태 && 현재페이지번호 != 0" @click="이전(flipbook)" :disabled="버튼비활성화상태">이전페이지</button>
                     </transition>
                     <transition name="fade">
-                        <button v-if="!버튼비활성화상태" @click="다음(flipbook)" style="margin-left: 201px">다음페이지</button>
+                        <button v-if="!버튼비활성화상태 && 현재페이지번호 !== 마지막페이지번호" @click="다음(flipbook)" style="position: absolute; left: 301px" :disabled="버튼비활성화상태">다음페이지</button>
+                    </transition>
+                </div>
+                <div class="flipbook-head" style="position: absolute; top: 50%; left: 52.6%; z-index: 2">
+                    <transition name="fade">
+                        <ButtonTwo v-if="!버튼비활성화상태 && 현재페이지번호 == 마지막페이지번호" @click="다음(flipbook)" />
+                    </transition>
+                    <transition name="fade">
+                        <ButtonTwo v-if="!버튼비활성화상태 && 현재페이지번호 == 마지막페이지번호" @click="다음(flipbook)" />
                     </transition>
                 </div>
             </flipbook>
@@ -68,7 +74,13 @@ export default {
     beforeUnmount() {},
     methods: {
         ...mapMutations(['현재페이지번호감소', '현재페이지번호증가']),
-        ...mapActions(['다음줄거리요청액션']),
+        ...mapActions(['다음줄거리요청액션', 'API테스트액션']),
+        async API테스트() {
+            this.API테스트액션({
+                선택한책고유번호: this.선택한책고유번호, // 파라미터로 액션에 전달
+                다음페이지번호: this.현재페이지번호 + 1, // 파라미터로 액션에 전달
+            });
+        },
 
         async 이전(flipbook) {
             if (this.현재페이지번호 == 0) {
@@ -127,6 +139,7 @@ export default {
     line-height: 2; /* 줄 간격을 1.5배로 설정 */
     letter-spacing: -0.1rem;
 }
+/* 하단부터 설정 X */
 .fade-enter-from {
     opacity: 0;
 }
