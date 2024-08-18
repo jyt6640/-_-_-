@@ -10,16 +10,16 @@ export default createStore({
         마지막페이지번호: 0,
         선택한책줄거리: [{ id: 0, 줄거리: null, 삽화: 'books/1.jpg', 캔버스: 'books/2.jpg', 다음선택지: [] }],
         pages: ['books/1.jpg', 'books/2.jpg'],
-        isProcessing: false,
+        버튼비활성화상태: false,
     },
     mutations: {
-        업데이트처리상태(state, status) {
-            state.isProcessing = status;
+        버튼비활성화상태변경(state, status) {
+            state.버튼비활성화상태 = status;
         },
         현재페이지번호증가(state) {
             state.현재페이지번호 += 1;
         },
-        이전페이지뮤테이션(state) {
+        현재페이지번호감소(state) {
             state.현재페이지번호 -= 1;
         },
         다음페이지정보추가(state, 다음페이지) {
@@ -32,7 +32,6 @@ export default createStore({
     },
     actions: {
         async 다음줄거리요청액션(context, { 선택한책고유번호, 다음페이지번호 }) {
-            context.commit('업데이트처리상태', true); // 처리 중 상태 true로 설정
             try {
                 // 첫 번째 요청: 다음 줄거리와 선택지 가져오기
                 const 결과1 = await axios.post('http://localhost:3000/nextTxt', { 다음페이지번호 });
@@ -44,7 +43,7 @@ export default createStore({
                 const 페이지캔버스 = document.querySelector('.pageCanvas');
                 페이지캔버스.innerHTML = 다음줄거리;
 
-                // DOM 업데이트를 기다립니다.
+                // DOM 업데이트를 기다린 후에 작업 수행
                 await nextTick();
 
                 const canvas = await html2canvas(페이지캔버스);
@@ -72,8 +71,6 @@ export default createStore({
                 context.commit('다음페이지정보추가', 다음페이지);
             } catch (error) {
                 console.error('오류 발생:', error);
-            } finally {
-                context.commit('업데이트처리상태', false);
             }
         },
     },
