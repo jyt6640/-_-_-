@@ -1,10 +1,24 @@
 <template>
-    <div class="ps-2">
-        <div title="Button border purple" class="button btnFloat btnPurple" style="margin-top: 55px"></div>
+    <div class="ps-2 gaegu-light">
+        <div title="Button border purple" class="button btnFloat btnPurple" style="margin-top: 55px" :data-content="buttonContent"></div>
         <div class="clear"></div>
     </div>
 </template>
-<script></script>
+<script>
+export default {
+    props: {
+        선택지: {
+            type: String,
+            required: true,
+        },
+    },
+    computed: {
+        buttonContent() {
+            return this.선택지;
+        },
+    },
+};
+</script>
 <style scoped>
 body {
     font-size: 20px;
@@ -12,6 +26,18 @@ body {
     color: #333;
     background: #ececec;
     overflow-y: scroll;
+}
+.btnFloat:before {
+    content: attr(data-content);
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 50px;
+    border-radius: 5px;
+    transition: all 0.2s;
+    font-size: 20px;
 }
 
 p {
@@ -89,18 +115,6 @@ div.button {
 .btnFloat {
     background: none;
     box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.5);
-}
-
-.btnFloat:before {
-    content: 'Float';
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 300px;
-    height: 50px;
-    border-radius: 5px;
-    transition: all 0.2s;
 }
 
 .btnBlueGreen.btnFloat:before {

@@ -45,7 +45,8 @@ app.post('/save_image/', async (req, res) => {
 app.post('/nextTxt', (req, res) => {
     // 가라 줄거리 배열
     const 줄거리들 = ['토끼 선생님은 매일 아침 일찍 일어나 산책을 하곤 했어요.', '토끼 선생님은 아침을 먹고 산책을 나갔어요.', '산책 도중에 토끼 선생님은 아름다운 꽃밭을 발견했어요.', '토끼 선생님은 산책을 하다가 친구를 만났어요.', '토끼 선생님은 산책을 하며 자연의 소리를 즐겼어요.'];
-    const 다음선택지 = ['산책을 하다 넘어졌어요', '산책을 하다 거북이를 만났어요'];
+    // 가라 선택지 배열
+    const 모든선택지 = ['산책을 하다 넘어졌어요', '산책을 하다 거북이를 만났어요', '산책 중에 비를 만났어요', '산책 도중에 나비를 쫓아갔어요', '산책을 하다가 길을 잃었어요', '산책을 하다 낯선 동굴을 발견했어요'];
     // 줄거리 배열에서 무작위로 하나의 줄거리 선택
     const 다음줄거리 = 줄거리들[Math.floor(Math.random() * 줄거리들.length)];
 
@@ -54,6 +55,20 @@ app.post('/nextTxt', (req, res) => {
     const 숫자키 = Object.keys(body).find((key) => !isNaN(Number(body[key])));
     // 추출한 숫자키를 숫자로 변환
     const 다음페이지번호 = Number(body[숫자키]);
+
+    // 선택지 배열에서 무작위로 두 개의 선택지 선택
+    function getRandomElements(arr, count) {
+        const result = [];
+        const _arr = [...arr];
+        while (result.length < count) {
+            const randomIndex = Math.floor(Math.random() * _arr.length);
+            result.push(_arr.splice(randomIndex, 1)[0]);
+        }
+        return result;
+    }
+
+    const 다음선택지 = getRandomElements(모든선택지, 2);
+    console.log(다음선택지);
 
     res.send({ 다음줄거리, 다음페이지번호, 다음선택지 });
 });

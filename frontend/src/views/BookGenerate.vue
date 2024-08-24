@@ -26,10 +26,10 @@
                 </div>
                 <div class="flipbook-head" style="position: absolute; top: 50%; left: 52.6%; z-index: 2">
                     <transition name="fade">
-                        <ButtonTwo v-if="!버튼비활성화상태 && 현재페이지번호 == 마지막페이지번호 && 선택지클릭잠금상태 == false" @click="선택지(flipbook)" :disabled="버튼비활성화상태 == true" />
+                        <ButtonTwo v-if="!버튼비활성화상태 && 현재페이지번호 == 마지막페이지번호 && 선택지클릭잠금상태 == false" @click="선택지(flipbook)" :선택지="선택한책줄거리[현재페이지번호].다음선택지[0]" :disabled="버튼비활성화상태 == true" />
                     </transition>
                     <transition name="fade">
-                        <ButtonTwo v-if="!버튼비활성화상태 && 현재페이지번호 == 마지막페이지번호 && 선택지클릭잠금상태 == false" @click="선택지(flipbook)" :disabled="버튼비활성화상태 == true" />
+                        <ButtonTwo v-if="!버튼비활성화상태 && 현재페이지번호 == 마지막페이지번호 && 선택지클릭잠금상태 == false" @click="선택지(flipbook)" :선택지="선택한책줄거리[현재페이지번호].다음선택지[1]" :disabled="버튼비활성화상태 == true" />
                     </transition>
                 </div>
             </flipbook>
@@ -40,6 +40,8 @@
         선택한책고유번호 {{ 선택한책고유번호 }} 현재페이지번호 {{ 현재페이지번호 }} 마지막페이지번호 {{ 마지막페이지번호 }} 버튼비활성화상태 {{ 버튼비활성화상태 }}
         <br />
         이전버튼클릭잠금상태 {{ 이전버튼클릭잠금상태 }} 다음버튼클릭잠금상태 {{ 다음버튼클릭잠금상태 }} 선택지클릭잠금상태 {{ 선택지클릭잠금상태 }}
+        <br />
+        <p style="font-size: 8px">선택한책줄거리 {{ 선택한책줄거리 }}</p>
     </div>
 </template>
 

@@ -31,11 +31,11 @@ export default createStore({
         },
     },
     actions: {
-        async API테스트액션(context, { 선택한책고유번호, 새로운페이지번호 }) {
+        async 삽화생성요청(context, { 선택한책고유번호, 새로운페이지번호 }) {
             try {
                 const 다음페이지번호 = 새로운페이지번호;
                 const 데이터 = {
-                    prompt: 'A young girl, 10, with bright eyes and a determined expression, stands on the bustling, neon-lit platform of a futuristic space station. Her bright red overalls are adorned with patches, and she carries a backpack overflowing with strange gadgets. Behind her, towering structures reach for the vast, starry sky. In the background, sleek spaceships glide past, leaving trails of shimmering light. The atmosphere is vibrant and full of excitement, hinting at the adventures that await. Emphasize a sense of wonder and courage, capturing the energy of a child embarking on an extraordinary journey.**  **Style:** Highly detailed, cinematic, with a touch of anime influence.   **Keywords:** futuristic space station, neon lights, young girl, bright eyes, determined, red overalls, backpack, gadgets, spaceships, starry sky, vibrant, exciting, wonder, courage, adventure.  **Optional additions:**  *  **Include a friendly robot companion standing beside the girl.**  *  **Add a whimsical touch with floating, glowing orbs or other futuristic elements.** * **Adjust the lighting for a more dramatic or whimsical feel.**  This prompt will generate a visually appealing image that captures the essence of the story`s themes and setting.',
+                    prompt: 'A vibrant, futuristic space station, bustling with activity. In the foreground, a 10-year-old girl with bright, curious eyes, wearing a sleek, functional jumpsuit and a determined expression. She holds a glowing device in one hand, a tool for her adventures. The background depicts a vast, star-filled panorama, showcasing the station`s docking bays and bustling marketplaces. Light streaks and holographic projections add to the sense of dynamism and excitement. Her eyes are focused on a group of children, her new friends, as they embark on a thrilling journey through the station`s labyrinthine corridors. Emphasize the sense of wonder and adventure, with a touch of mystery and courage. Render in a vibrant, detailed style, reminiscent of classic sci-fi illustration.  **Keywords:** futuristic space station, 10-year-old girl, kind, resourceful, adventure, bustling, vibrant, glowing device, star-filled panorama, docking bays, marketplaces, light streaks, holographic projections, dynamic, exciting, friendship, courage, mystery, wonder, classic sci-fi illustration.  **Optional:**   * Add specific details to the girl`s appearance (hair color, eye color, etc.) * Include a specific object or creature that symbolizes the adventure (a robot, an alien, a mysterious artifact) * Adjust the lighting and color palette to create a specific mood (e.g., bright and colorful for excitement, dark and mysterious for suspense)  **Example:**  A 10-year-old girl with fiery red hair, wearing a blue jumpsuit and holding a glowing orb, stands in the middle of a crowded space station marketplace, filled with vibrant colors and holographic displays. Her eyes sparkle with determination as she gazes at her friends, a group of children with diverse backgrounds, all ready to embark on a daring adventure. In the background, a shimmering, metallic spaceship docks with the station, leaving a trail of stardust in its wake.',
                 };
                 const 결과 = await axios.post('http://220.69.241.62:8083/generate_image/', 데이터, {
                     headers: {
@@ -94,7 +94,7 @@ export default createStore({
                 const newSaveAsPage = process.env.BASE_URL + `books/${결과파일명}`;
 
                 // 세 번째 요청: 가라삽화 저장
-                const 결과파일명2 = await context.dispatch('API테스트액션', { 선택한책고유번호, 새로운페이지번호 });
+                const 결과파일명2 = await context.dispatch('삽화생성요청', { 선택한책고유번호, 새로운페이지번호 });
                 //const 결과3 = await axios.post('http://localhost:3000/nextImg', { 선택한책고유번호, 새로운페이지번호 });
                 const newSaveAsPage2 = process.env.BASE_URL + `books/${결과파일명2}`;
 
