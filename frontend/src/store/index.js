@@ -35,7 +35,7 @@ export default createStore({
             try {
                 const 다음페이지번호 = 새로운페이지번호;
                 const 데이터 = {
-                    prompt: 'A majestic ancient dragon with black scales and golden eyes, standing atop a high mountain nest, surrounded by swirling clouds and wind. The dragon, wise and solitary, senses a dark omen looming over the world.',
+                    prompt: 'A young girl, 10, with bright eyes and a determined expression, stands on the bustling, neon-lit platform of a futuristic space station. Her bright red overalls are adorned with patches, and she carries a backpack overflowing with strange gadgets. Behind her, towering structures reach for the vast, starry sky. In the background, sleek spaceships glide past, leaving trails of shimmering light. The atmosphere is vibrant and full of excitement, hinting at the adventures that await. Emphasize a sense of wonder and courage, capturing the energy of a child embarking on an extraordinary journey.**  **Style:** Highly detailed, cinematic, with a touch of anime influence.   **Keywords:** futuristic space station, neon lights, young girl, bright eyes, determined, red overalls, backpack, gadgets, spaceships, starry sky, vibrant, exciting, wonder, courage, adventure.  **Optional additions:**  *  **Include a friendly robot companion standing beside the girl.**  *  **Add a whimsical touch with floating, glowing orbs or other futuristic elements.** * **Adjust the lighting for a more dramatic or whimsical feel.**  This prompt will generate a visually appealing image that captures the essence of the story`s themes and setting.',
                 };
                 const 결과 = await axios.post('http://220.69.241.62:8083/generate_image/', 데이터, {
                     headers: {

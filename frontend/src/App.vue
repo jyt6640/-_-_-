@@ -13,6 +13,8 @@
     overflow: hidden;
     background-color: #c5c3c6;
     color: #cccccc;
+    user-select: none; /* 사용자가 텍스트를 선택할 수 없게 합니다 */
+    contenteditable: false; /* 텍스트를 편집할 수 없게 합니다 */
 }
 .gaegu-bold {
     font-family: 'Gaegu', sans-serif;
@@ -31,6 +33,11 @@
     font-weight: 300;
     font-style: normal;
 }
+#app > div:nth-child(2) > div.col-9 > div > div.viewport.drag-to-scroll > div > div.click-to-flip.left,
+#app > div:nth-child(2) > div.col-9 > div > div.viewport.drag-to-scroll > div > div.click-to-flip.right {
+    display: none;
+}
+
 #app > div:nth-child(2) > div.col-9 > div > div.viewport.drag-to-scroll > div > div:nth-child(3) > img:nth-child(1) {
     border-radius: 15px 0 0 15px;
 }

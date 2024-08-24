@@ -1,5 +1,4 @@
 <template>
-    <button @click="API테스트()"></button>
     <div v-if="다음줄거리로딩상태 == true" style="position: absolute; top: 38%; left: 48.72%; z-index: 2">
         <BookLoader />
     </div>
@@ -22,7 +21,7 @@
                         <Button이전 v-if="!버튼비활성화상태 && 현재페이지번호 != 0 && 이전버튼클릭잠금상태 == false" @click="이전(flipbook)" :disabled="버튼비활성화상태 == true" />
                     </transition>
                     <transition name="fade">
-                        <button v-if="!버튼비활성화상태 && 현재페이지번호 != 마지막페이지번호 && 다음버튼클릭잠금상태 == false" @click="다음(flipbook)" style="position: absolute; left: 301px" :disabled="버튼비활성화상태 == true">다음페이지</button>
+                        <Button다음 v-if="!버튼비활성화상태 && 현재페이지번호 != 마지막페이지번호 && 다음버튼클릭잠금상태 == false" @click="다음(flipbook)" style="position: absolute; left: 301px" :disabled="버튼비활성화상태 == true" />
                     </transition>
                 </div>
                 <div class="flipbook-head" style="position: absolute; top: 50%; left: 52.6%; z-index: 2">
@@ -50,6 +49,7 @@ import Flipbook from 'flipbook-vue';
 import BookLoader from '@/components/BookLoader.vue';
 import ButtonTwo from '@/components/ButtonTwo.vue';
 import Button이전 from '@/components/Button이전.vue';
+import Button다음 from '@/components/Button다음.vue';
 
 export default {
     components: {
@@ -57,6 +57,7 @@ export default {
         BookLoader,
         ButtonTwo,
         Button이전,
+        Button다음,
     },
     name: 'App',
     computed: {
@@ -177,6 +178,7 @@ export default {
 .flipbook-head {
     text-align: center;
 }
+
 .pageCanvas {
     font-size: 2rem;
     color: black;

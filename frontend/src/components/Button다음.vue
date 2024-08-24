@@ -1,6 +1,6 @@
 <template>
     <div class="ps-2">
-        <div title="Button border purple" class="button btnFade btnPurple">◀</div>
+        <div title="Button border purple" class="button btnFade btnPurple">▶</div>
         <div class="clear"></div>
     </div>
 </template>
@@ -24,6 +24,7 @@ div.button {
     display: block;
     position: relative;
     float: left;
+    left: 50px;
     width: 30px;
     padding: 0 20px 0 6px;
     margin: 10px 0 10px 0;
