@@ -1,7 +1,5 @@
 <template>
-    <div style="margin: 3vw; margin-left: 1.2vw" class="row">
-        <div title="Button border purple" class="button btnFloat btnPurple gaegu-light" :data-content="buttonContent"></div>
-    </div>
+    <div title="Button border purple" class="button btnFloat btnPurple gaegu-light" style="left: 3.3vw" :data-content="buttonContent"></div>
 </template>
 <script>
 export default {
@@ -20,23 +18,31 @@ export default {
 </script>
 <style scoped>
 body {
-    font-size: 20px;
+    font-size: 10px;
     line-height: 24px;
     color: #333;
     background: #ececec;
     overflow-y: scroll;
 }
+
 .btnFloat:before {
     content: attr(data-content);
     display: block;
     position: absolute;
     top: 0;
     left: 0;
-    width: 300px;
-    height: 50px;
+    width: 25vw;
+    height: 8vh;
     border-radius: 5px;
     transition: all 0.2s;
-    font-size: 20px;
+    font-size: 1.3vw;
+    line-height: 3.4vh; /* 라인 높이 조정 */
+    letter-spacing: -0.07em; /* 글자 간격 조정 */
+    padding-top: 1vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    line-break: loose; /* 한국어 문장의 자연스러운 줄바꿈 */
+    word-break: keep-all; /* 어절 단위로 줄바꿈 */
 }
 
 p {
@@ -84,7 +90,7 @@ div.button {
     display: block;
     position: relative;
     float: left;
-    width: 200px;
+    width: 100vw !important;
     padding: 0;
     margin: 10px 20px 10px 0;
     font-weight: 600;

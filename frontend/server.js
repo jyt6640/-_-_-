@@ -132,10 +132,11 @@ app.post('/nextTxt', async (req, res) => {
     };
 
     const response = await axios.post('http://220.69.241.62:8000/generate_story_page/', 요청데이터);
-    const 다음줄거리 = response.data.text;
     const 다음선택지 = Object.values(response.data.choices); // 선택지를 배열로 변환
     // stable 텍스트 내용을 순회하여 작은따옴표를 백틱으로 변환
     let stableText = response.data.stable.replace(/'/g, '`');
+    // 줄거리에서 마침표를 기준으로 <br> 삽입
+    const 다음줄거리 = response.data.text.replace(/\.\s*/g, '.<br>');
 
     console.log('요청된 다음줄거리 결과:', response.data.text);
     console.log('요청된 다음선택지 결과:', response.data.choices);
