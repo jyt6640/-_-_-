@@ -79,7 +79,7 @@ async def generate_image(prompt_data: ImagePrompt):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# FastAPI 서버 시작
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
