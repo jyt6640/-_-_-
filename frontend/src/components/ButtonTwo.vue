@@ -1,7 +1,6 @@
 <template>
-    <div class="ps-2 gaegu-light">
-        <div title="Button border purple" class="button btnFloat btnPurple" style="margin-top: 55px" :data-content="buttonContent"></div>
-        <div class="clear"></div>
+    <div style="margin: 3vw; margin-left: 1.2vw" class="row">
+        <div title="Button border purple" class="button btnFloat btnPurple gaegu-light" :data-content="buttonContent"></div>
     </div>
 </template>
 <script>

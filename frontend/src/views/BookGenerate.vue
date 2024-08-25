@@ -169,10 +169,6 @@ export default {
 </script>
 
 <style scoped>
-#app > div:nth-child(2) > div.col-9 > div > div.viewport.drag-to-scroll > div > div.click-to-flip.left,
-#app > div:nth-child(2) > div.col-9 > div > div.viewport.drag-to-scroll > div > div.click-to-flip.right {
-    display: none !important;
-}
 .flipbook {
     width: 80vw;
     height: 80vh;

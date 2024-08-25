@@ -31,11 +31,12 @@ export default createStore({
         },
     },
     actions: {
-        async 삽화생성요청(context, { 선택한책고유번호, 새로운페이지번호 }) {
+        async 삽화생성요청(context, { 선택한책고유번호, 새로운페이지번호, stableText }) {
             try {
                 const 다음페이지번호 = 새로운페이지번호;
+                const 삽화프롬프트 = stableText;
                 const 데이터 = {
-                    prompt: 'A vibrant, futuristic space station, bustling with activity. In the foreground, a 10-year-old girl with bright, curious eyes, wearing a sleek, functional jumpsuit and a determined expression. She holds a glowing device in one hand, a tool for her adventures. The background depicts a vast, star-filled panorama, showcasing the station`s docking bays and bustling marketplaces. Light streaks and holographic projections add to the sense of dynamism and excitement. Her eyes are focused on a group of children, her new friends, as they embark on a thrilling journey through the station`s labyrinthine corridors. Emphasize the sense of wonder and adventure, with a touch of mystery and courage. Render in a vibrant, detailed style, reminiscent of classic sci-fi illustration.  **Keywords:** futuristic space station, 10-year-old girl, kind, resourceful, adventure, bustling, vibrant, glowing device, star-filled panorama, docking bays, marketplaces, light streaks, holographic projections, dynamic, exciting, friendship, courage, mystery, wonder, classic sci-fi illustration.  **Optional:**   * Add specific details to the girl`s appearance (hair color, eye color, etc.) * Include a specific object or creature that symbolizes the adventure (a robot, an alien, a mysterious artifact) * Adjust the lighting and color palette to create a specific mood (e.g., bright and colorful for excitement, dark and mysterious for suspense)  **Example:**  A 10-year-old girl with fiery red hair, wearing a blue jumpsuit and holding a glowing orb, stands in the middle of a crowded space station marketplace, filled with vibrant colors and holographic displays. Her eyes sparkle with determination as she gazes at her friends, a group of children with diverse backgrounds, all ready to embark on a daring adventure. In the background, a shimmering, metallic spaceship docks with the station, leaving a trail of stardust in its wake.',
+                    prompt: 삽화프롬프트,
                 };
                 const 결과 = await axios.post('http://220.69.241.62:8083/generate_image/', 데이터, {
                     headers: {
@@ -78,6 +79,7 @@ export default createStore({
                 const 다음줄거리 = 결과1.data.다음줄거리;
                 const 다음선택지 = 결과1.data.다음선택지;
                 const 새로운페이지번호 = 결과1.data.다음페이지번호;
+                const stableText = 결과1.data.stableText;
 
                 // 다음 줄거리를 페이지 캔버스에 업데이트
                 const 페이지캔버스 = document.querySelector('.pageCanvas');
@@ -93,8 +95,8 @@ export default createStore({
                 const 결과파일명 = 결과2.data.filename;
                 const newSaveAsPage = process.env.BASE_URL + `books/${결과파일명}`;
 
-                // 세 번째 요청: 가라삽화 저장
-                const 결과파일명2 = await context.dispatch('삽화생성요청', { 선택한책고유번호, 새로운페이지번호 });
+                // 세 번째 요청: 삽화 생성 요청후 저장
+                const 결과파일명2 = await context.dispatch('삽화생성요청', { 선택한책고유번호, 새로운페이지번호, stableText });
                 //const 결과3 = await axios.post('http://localhost:3000/nextImg', { 선택한책고유번호, 새로운페이지번호 });
                 const newSaveAsPage2 = process.env.BASE_URL + `books/${결과파일명2}`;
 
