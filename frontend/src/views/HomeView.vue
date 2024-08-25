@@ -1,5 +1,5 @@
 <template>
-    <div class="col">
+    <div class="col" style="position: absolute; z-index: -9999">
         <div ref="pageCanvas" class="col-3 pageCanvas gaegu-bold" style="padding-top: 80px; padding-left: 30px; padding-right: 20px">
             <!-- @click="saveAsImage($event)" -->
             <!-- <img src="@/assets/logo.png" /> -->
@@ -48,6 +48,11 @@
             </div>
 
             <div class="form-group">
+                <label for="theme">Theme:</label>
+                <input type="text" id="theme" v-model="formData.theme" required />
+            </div>
+
+            <div class="form-group">
                 <label for="sentences_per_page">Sentences per Page:</label>
                 <input type="number" id="sentences_per_page" v-model="formData.sentences_per_page" required />
             </div>
@@ -60,11 +65,6 @@
             <div class="form-group">
                 <label for="story_mood">Story Mood:</label>
                 <input type="text" id="story_mood" v-model="formData.story_mood" required />
-            </div>
-
-            <div class="form-group">
-                <label for="theme">Theme:</label>
-                <input type="text" id="theme" v-model="formData.theme" required />
             </div>
 
             <div class="form-group">
@@ -101,20 +101,20 @@ export default {
     data() {
         return {
             formData: {
-                protagonist_name: '안나',
-                protagonist_characteristics: '활발',
-                gender: 'female',
-                age: 10,
-                era: 'futuristic',
-                genre: 'sci-fi adventure',
-                start_place: 'a bustling space station',
+                protagonist_name: '용태',
+                protagonist_characteristics: '소심한',
+                gender: 'male',
+                age: 20,
+                era: '중세시대', // 시대
+                genre: '일본풍',
+                start_place: '숲속',
                 sentences_per_page: 5,
                 choices_per_page: 2,
                 story_mood: 'exciting',
-                theme: 'friendship and courage',
+                theme: '사랑과 전쟁',
                 current_page: 1,
                 ending_page_count: 4,
-                ending_style: 'surprising',
+                ending_style: 'bad',
             },
         };
     },
@@ -183,7 +183,7 @@ button:hover {
     background-color: #0056b3;
 }
 .pageCanvas {
-    font-size: 1.5vw;
+    font-size: 1.2vw;
     color: black;
     width: 480px;
     height: 640px;

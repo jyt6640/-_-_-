@@ -27,10 +27,16 @@
                     </div>
                     <div class="flipbook-head">
                         <transition name="fade">
-                            <ButtonTwo v-if="!버튼비활성화상태 && 현재페이지번호 == 마지막페이지번호 && 선택지클릭잠금상태 == false" @click="선택지(flipbook, 0)" :선택지="선택한책줄거리[현재페이지번호 - 1].다음선택지[0]" :disabled="버튼비활성화상태 == true" />
+                            <ButtonTwo v-if="!버튼비활성화상태 && 현재페이지번호 == 마지막페이지번호 && 현재페이지번호 != 5 && 선택지클릭잠금상태 == false" @click="선택지(flipbook, 0)" :선택지="선택한책줄거리[현재페이지번호 - 1].다음선택지[0]" :disabled="버튼비활성화상태 == true" />
                         </transition>
                         <transition name="fade">
-                            <ButtonTwo style="margin-top: 10vh" v-if="!버튼비활성화상태 && 현재페이지번호 == 마지막페이지번호 && 선택지클릭잠금상태 == false" @click="선택지(flipbook, 1)" :선택지="선택한책줄거리[현재페이지번호 - 1].다음선택지[1]" :disabled="버튼비활성화상태 == true" />
+                            <ButtonTwo
+                                style="margin-top: 10vh"
+                                v-if="!버튼비활성화상태 && 현재페이지번호 == 마지막페이지번호 && 현재페이지번호 != 5 && 선택지클릭잠금상태 == false"
+                                @click="선택지(flipbook, 1)"
+                                :선택지="선택한책줄거리[현재페이지번호 - 1].다음선택지[1]"
+                                :disabled="버튼비활성화상태 == true"
+                            />
                         </transition>
                     </div>
                 </flipbook>
