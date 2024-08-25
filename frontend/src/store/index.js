@@ -31,11 +31,12 @@ export default createStore({
         },
     },
     actions: {
-        async API테스트액션(context, { 선택한책고유번호, 새로운페이지번호 }) {
+        async 삽화생성요청(context, { 선택한책고유번호, 새로운페이지번호, stableText }) {
             try {
                 const 다음페이지번호 = 새로운페이지번호;
+                const 삽화프롬프트 = stableText;
                 const 데이터 = {
-                    prompt: 'A majestic ancient dragon with black scales and golden eyes, standing atop a high mountain nest, surrounded by swirling clouds and wind. The dragon, wise and solitary, senses a dark omen looming over the world.',
+                    prompt: 삽화프롬프트,
                 };
                 const 결과 = await axios.post('http://220.69.241.62:8083/generate_image/', 데이터, {
                     headers: {
@@ -78,6 +79,7 @@ export default createStore({
                 const 다음줄거리 = 결과1.data.다음줄거리;
                 const 다음선택지 = 결과1.data.다음선택지;
                 const 새로운페이지번호 = 결과1.data.다음페이지번호;
+                const stableText = 결과1.data.stableText;
 
                 // 다음 줄거리를 페이지 캔버스에 업데이트
                 const 페이지캔버스 = document.querySelector('.pageCanvas');
@@ -93,8 +95,8 @@ export default createStore({
                 const 결과파일명 = 결과2.data.filename;
                 const newSaveAsPage = process.env.BASE_URL + `books/${결과파일명}`;
 
-                // 세 번째 요청: 가라삽화 저장
-                const 결과파일명2 = await context.dispatch('API테스트액션', { 선택한책고유번호, 새로운페이지번호 });
+                // 세 번째 요청: 삽화 생성 요청후 저장
+                const 결과파일명2 = await context.dispatch('삽화생성요청', { 선택한책고유번호, 새로운페이지번호, stableText });
                 //const 결과3 = await axios.post('http://localhost:3000/nextImg', { 선택한책고유번호, 새로운페이지번호 });
                 const newSaveAsPage2 = process.env.BASE_URL + `books/${결과파일명2}`;
 

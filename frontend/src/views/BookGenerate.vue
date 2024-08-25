@@ -1,5 +1,4 @@
 <template>
-    <button @click="API테스트()"></button>
     <div v-if="다음줄거리로딩상태 == true" style="position: absolute; top: 38%; left: 48.72%; z-index: 2">
         <BookLoader />
     </div>
@@ -19,18 +18,18 @@
                 </div>
                 <div class="flipbook-head" style="position: absolute; top: 14%; left: 50.5%; z-index: 2">
                     <transition name="fade">
-                        <button v-if="!버튼비활성화상태 && 현재페이지번호 != 0" @click="이전(flipbook)" :disabled="버튼비활성화상태">이전페이지</button>
+                        <Button이전 v-if="!버튼비활성화상태 && 현재페이지번호 != 0 && 이전버튼클릭잠금상태 == false" @click="이전(flipbook)" :disabled="버튼비활성화상태 == true" />
                     </transition>
                     <transition name="fade">
-                        <button v-if="!버튼비활성화상태 && 현재페이지번호 !== 마지막페이지번호" @click="다음(flipbook)" style="position: absolute; left: 301px" :disabled="버튼비활성화상태">다음페이지</button>
+                        <Button다음 v-if="!버튼비활성화상태 && 현재페이지번호 != 마지막페이지번호 && 다음버튼클릭잠금상태 == false" @click="다음(flipbook)" style="position: absolute; left: 301px" :disabled="버튼비활성화상태 == true" />
                     </transition>
                 </div>
                 <div class="flipbook-head" style="position: absolute; top: 50%; left: 52.6%; z-index: 2">
                     <transition name="fade">
-                        <ButtonTwo v-if="!버튼비활성화상태 && 현재페이지번호 == 마지막페이지번호" @click="다음(flipbook)" />
+                        <ButtonTwo v-if="!버튼비활성화상태 && 현재페이지번호 == 마지막페이지번호 && 선택지클릭잠금상태 == false" @click="선택지(flipbook)" :선택지="선택한책줄거리[현재페이지번호].다음선택지[0]" :disabled="버튼비활성화상태 == true" />
                     </transition>
                     <transition name="fade">
-                        <ButtonTwo v-if="!버튼비활성화상태 && 현재페이지번호 == 마지막페이지번호" @click="다음(flipbook)" />
+                        <ButtonTwo v-if="!버튼비활성화상태 && 현재페이지번호 == 마지막페이지번호 && 선택지클릭잠금상태 == false" @click="선택지(flipbook)" :선택지="선택한책줄거리[현재페이지번호].다음선택지[1]" :disabled="버튼비활성화상태 == true" />
                     </transition>
                 </div>
             </flipbook>
@@ -39,6 +38,10 @@
     <div class="row" style="color: black">
         {{ pages }}<br />
         선택한책고유번호 {{ 선택한책고유번호 }} 현재페이지번호 {{ 현재페이지번호 }} 마지막페이지번호 {{ 마지막페이지번호 }} 버튼비활성화상태 {{ 버튼비활성화상태 }}
+        <br />
+        이전버튼클릭잠금상태 {{ 이전버튼클릭잠금상태 }} 다음버튼클릭잠금상태 {{ 다음버튼클릭잠금상태 }} 선택지클릭잠금상태 {{ 선택지클릭잠금상태 }}
+        <br />
+        <p style="font-size: 8px">선택한책줄거리 {{ 선택한책줄거리 }}</p>
     </div>
 </template>
 
@@ -47,12 +50,16 @@ import { mapActions, mapMutations, mapState } from 'vuex';
 import Flipbook from 'flipbook-vue';
 import BookLoader from '@/components/BookLoader.vue';
 import ButtonTwo from '@/components/ButtonTwo.vue';
+import Button이전 from '@/components/Button이전.vue';
+import Button다음 from '@/components/Button다음.vue';
 
 export default {
     components: {
         Flipbook,
         BookLoader,
         ButtonTwo,
+        Button이전,
+        Button다음,
     },
     name: 'App',
     computed: {
@@ -68,6 +75,9 @@ export default {
     data() {
         return {
             다음줄거리로딩상태: false,
+            이전버튼클릭잠금상태: false,
+            다음버튼클릭잠금상태: false,
+            선택지클릭잠금상태: false,
         };
     },
     created() {},
@@ -83,19 +93,56 @@ export default {
         },
 
         async 이전(flipbook) {
-            if (this.현재페이지번호 == 0) {
+            if (this.현재페이지번호 == 0 || this.이전버튼클릭잠금상태) {
                 return;
             } else {
+                this.이전버튼클릭잠금상태 = true; // 잠금 상태 활성화
+                this.다음버튼클릭잠금상태 = true; // 잠금 상태 활성화
+                this.현재페이지번호감소();
+                await new Promise((resolve) => setTimeout(resolve, 500));
+
                 this.$store.commit('버튼비활성화상태변경', true);
                 flipbook.flipLeft();
                 await new Promise((resolve) => setTimeout(resolve, 2500));
-                this.현재페이지번호감소();
-                this.$store.commit('버튼비활성화상태변경', false); // 버튼 활성화 추가
+
+                this.$store.commit('버튼비활성화상태변경', false);
+                await new Promise((resolve) => setTimeout(resolve, 500)); // 추가적인 딜레이
+                this.이전버튼클릭잠금상태 = false; // 잠금 상태 해제
+                this.다음버튼클릭잠금상태 = false; // 잠금 상태 해제
             }
         },
 
         async 다음(flipbook) {
+            if (this.다음버튼클릭잠금상태) {
+                return; // 버튼이 잠금 상태일 때는 아무 작업도 하지 않음
+            } else {
+                this.다음버튼클릭잠금상태 = true; // 잠금 상태 활성화
+                this.이전버튼클릭잠금상태 = true; // 잠금 상태 활성화
+                this.선택지클릭잠금상태 = true; // 잠금 상태 활성화
+                // 만약 현재 페이지가 마지막 페이지가 아닐경우, 다른 액션 없이 다음 페이지로만 이동
+                this.현재페이지번호증가();
+                await new Promise((resolve) => setTimeout(resolve, 500));
+
+                this.$store.commit('버튼비활성화상태변경', true);
+                flipbook.flipRight();
+                await new Promise((resolve) => setTimeout(resolve, 2500)); // 두번째 await - 2.5초 기다림
+
+                this.$store.commit('버튼비활성화상태변경', false);
+                await new Promise((resolve) => setTimeout(resolve, 500)); // 추가적인 딜레이
+                this.다음버튼클릭잠금상태 = false; // 잠금 상태 해제
+                this.이전버튼클릭잠금상태 = false; // 잠금 상태 해제
+                this.선택지클릭잠금상태 = false; // 잠금 상태 해제
+            }
+        },
+
+        async 선택지(flipbook) {
+            if (this.다음버튼클릭잠금상태) {
+                return; // 버튼이 잠금 상태일 때는 아무 작업도 하지 않음
+            }
+            this.다음버튼클릭잠금상태 = true; // 잠금 상태 활성화
+            this.이전버튼클릭잠금상태 = true; // 잠금 상태 활성화
             this.$store.commit('버튼비활성화상태변경', true);
+
             if (this.현재페이지번호 === this.마지막페이지번호) {
                 // 만약 현재 페이지가 마지막 페이지일경우, 다음 줄거리 + 삽화 새로 요청
                 this.다음줄거리로딩상태 = true;
@@ -108,10 +155,14 @@ export default {
             } else {
                 // 만약 현재 페이지가 마지막 페이지가 아닐경우, 다른 액션 없이 다음 페이지로만 이동
                 this.현재페이지번호증가();
+                await new Promise((resolve) => setTimeout(resolve, 500));
             }
             flipbook.flipRight();
             await new Promise((resolve) => setTimeout(resolve, 2500)); // 두번째 await - 2.5초 기다림
-            this.$store.commit('버튼비활성화상태변경', false); // 버튼 활성화 추가
+
+            this.$store.commit('버튼비활성화상태변경', false);
+            this.다음버튼클릭잠금상태 = false; // 잠금 상태 해제
+            this.이전버튼클릭잠금상태 = false; // 잠금 상태 해제
         },
     },
 };
@@ -125,6 +176,7 @@ export default {
 .flipbook-head {
     text-align: center;
 }
+
 .pageCanvas {
     font-size: 2rem;
     color: black;
