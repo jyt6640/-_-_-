@@ -9,6 +9,7 @@ import dotenv
 
 # FastAPI 인스턴스 생성
 app = FastAPI()
+dotenv.load_dotenv()
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -86,7 +87,7 @@ async def generate_story_text(request: StoryRequest):
 
 async def generate_choices(request: StoryRequest, story_text_en: str):
     choices_prompt = (
-        f"다음 동화 내용을 바탕으로: '{story_text_en}', 주인공 {request.protagonist_name}이 (가) 스토리를 진행하기 위해 선택할 수 있는 2개의 선택지를 생성해 주세요. "
+        f"다음 동화 내용을 바탕으로: '{story_text_en}', 주인공이 스토리를 진행하기 위해 선택할 수 있는 2개의 선택지를 생성해 주세요. "
         f"각 선택지는 간결한 문장으로 작성되어야 하며, 특수 문자나 마크다운 형식은 없어야 합니다."
     )
     try:
@@ -115,6 +116,7 @@ async def generate_stable_prompt(request: StoryRequest, story_text_en: str):
         f"다음 스토리 및 주인공을 바탕으로 간단한 Stable Diffusion 프롬프트를 생성해 주세요: "
         f"동화내용 : {story_text_en}, 주인공 이름 및 성격: {request.protagonist_name}, {request.protagonist_characteristics}. 프롬프트는 간결하게 작성해야합니다."
         f"프롬프트에는 특수 문자나 마크다운 형식이 없어야 하며, 65토큰 이내로 작성해 주세요."
+        f"문장이 아닌 주어와 동사를 뺀 문구로 만들어주며 짧막한 단어로 구성해야합니다.."
         f"항상 영어로 결과값을 나오게 해주세요."
     )
     try:
@@ -137,10 +139,10 @@ async def generate_stable_prompt(request: StoryRequest, story_text_en: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Stable Diffusion 프롬프트 생성 중 오류 발생: {str(e)}")
 
-# 동화 페이지 생성 엔드포인트 정의
 @app.post("/generate_story_page/")
 async def generate_story_page_endpoint(request: StoryRequest):
     try:
+        
         # 1. 동화 텍스트 생성
         story_text_en = await generate_story_text(request)
         
@@ -150,9 +152,6 @@ async def generate_story_page_endpoint(request: StoryRequest):
         # 3. Stable Diffusion 프롬프트 생성
         stable_prompt = await generate_stable_prompt(request, story_text_en)
 
-        # 4. (선택사항) 200 OK 응답을 위한 대기
-        await asyncio.sleep(20)  # 20초 대기
-        
         # 5. 결과 반환
         return {
             "text": story_text_en,
@@ -165,6 +164,7 @@ async def generate_story_page_endpoint(request: StoryRequest):
 @app.post("/generate_next_page/")
 async def generate_next_page_endpoint(request: StoryRequestWithChoice):
     try:
+        await asyncio.sleep(20)
         if request.current_page == request.ending_page_count:
             # 종료 페이지에 도달했을 때의 프롬프트
             next_story_prompt = (
