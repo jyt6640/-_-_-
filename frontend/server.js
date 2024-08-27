@@ -107,41 +107,78 @@ app.post('/save_image/', async (req, res) => {
 });
 
 app.post('/nextTxt', async (req, res) => {
-    const body = req.body;
+    const { formData, 현재페이지줄거리, 선택한선택지 } = req.body;
+
+    if (!formData) {
+        return res.status(400).send('Form data is missing');
+    }
+
     // 숫자로 변환 가능한 키를 찾음
-    const 숫자키 = Object.keys(body).find((key) => !isNaN(Number(body[key])));
+    const 숫자키 = Object.keys(req.body).find((key) => !isNaN(Number(req.body[key])));
     // 추출한 숫자키를 숫자로 변환
-    const 다음페이지번호 = Number(body[숫자키]);
+    const 다음페이지번호 = Number(req.body[숫자키]);
 
-    // 외부 API에 요청을 보내기 위한 데이터 구성
-    const 요청데이터 = {
-        protagonist_name: 'Luna',
-        protagonist_characteristics: 'kind and resourceful',
-        gender: 'female',
-        age: 10,
-        era: 'futuristic',
-        genre: 'sci-fi adventure',
-        start_place: 'a bustling space station',
-        sentences_per_page: 5,
-        choices_per_page: 2,
-        story_mood: 'exciting',
-        theme: 'friendship and courage',
-        current_page: 1,
-        ending_page_count: 4,
-        ending_style: 'surprising',
-    };
+    let response; // response 변수를 함수 스코프에서 선언
 
-    const response = await axios.post('http://220.69.241.62:8000/generate_story_page/', 요청데이터);
-    const 다음줄거리 = response.data.text;
-    const 다음선택지 = Object.values(response.data.choices); // 선택지를 배열로 변환
-    // stable 텍스트 내용을 순회하여 작은따옴표를 백틱으로 변환
-    let stableText = response.data.stable.replace(/'/g, '`');
+    try {
+        if (다음페이지번호 === 1) {
+            // 외부 API에 요청을 보내기 위한 데이터 구성
+            const 요청데이터 = {
+                protagonist_name: formData.protagonist_name,
+                protagonist_characteristics: formData.protagonist_characteristics,
+                gender: formData.gender,
+                age: formData.age,
+                era: formData.era,
+                genre: formData.genre,
+                start_place: formData.start_place,
+                sentences_per_page: formData.sentences_per_page,
+                choices_per_page: formData.choices_per_page,
+                story_mood: formData.story_mood,
+                theme: formData.theme,
+                current_page: 다음페이지번호, // 현재 페이지 번호를 반영
+                ending_page_count: formData.ending_page_count,
+                ending_style: formData.ending_style,
+            };
 
-    console.log('요청된 다음줄거리 결과:', response.data.text);
-    console.log('요청된 다음선택지 결과:', response.data.choices);
-    console.log('요청된 stable 결과:', stableText);
+            response = await axios.post('http://220.69.241.62:8000/generate_story_page/', 요청데이터);
+        } else if (다음페이지번호 > 1) {
+            const 요청데이터 = {
+                previous_text: 현재페이지줄거리 || '',
+                previous_choice_text: 선택한선택지 || '',
+                current_page: 다음페이지번호,
+                protagonist_name: formData.protagonist_name,
+                protagonist_characteristics: formData.protagonist_characteristics,
+                gender: formData.gender,
+                age: formData.age,
+                era: formData.era,
+                genre: formData.genre,
+                start_place: formData.start_place,
+                sentences_per_page: formData.sentences_per_page,
+                choices_per_page: formData.choices_per_page,
+                story_mood: formData.story_mood,
+                theme: formData.theme,
+                ending_page_count: formData.ending_page_count,
+                ending_style: formData.ending_style,
+            };
+            console.log('요청 데이터:', JSON.stringify(요청데이터, null, 2));
+            response = await axios.post('http://220.69.241.62:8000/generate_next_page/', 요청데이터);
+        }
 
-    res.send({ 다음줄거리, 다음페이지번호, 다음선택지, stableText });
+        const 다음선택지 = Object.values(response.data.choices); // 선택지를 배열로 변환
+        // stable 텍스트 내용을 순회하여 작은따옴표를 백틱으로 변환
+        let stableText = response.data.stable.replace(/'/g, '`');
+        // 줄거리에서 마침표를 기준으로 <br> 삽입
+        const 다음줄거리 = response.data.text.replace(/\.\s*/g, '.<br>');
+
+        console.log('요청된 다음줄거리 결과:', response.data.text);
+        console.log('요청된 다음선택지 결과:', response.data.choices);
+        console.log('요청된 stable 결과:', stableText);
+
+        res.send({ 다음줄거리, 다음페이지번호, 다음선택지, stableText });
+    } catch (error) {
+        console.error('Error during API request:', error);
+        res.status(500).send('Error during story page generation');
+    }
 });
 
 // 이미지 데이터를 받아서 서버에 저장하는 엔드포인트 라우터

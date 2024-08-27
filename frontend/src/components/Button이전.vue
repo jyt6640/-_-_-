@@ -1,5 +1,5 @@
 <template>
-    <div class="ps-2">
+    <div>
         <div title="Button border purple" class="button btnFade btnPurple">◀</div>
         <div class="clear"></div>
     </div>
@@ -7,8 +7,6 @@
 <script></script>
 <style scoped>
 body {
-    font-size: 5px;
-    line-height: 24px;
     color: #333;
     background: #ececec;
     overflow-y: scroll;
@@ -21,17 +19,18 @@ a:visited {
 }
 
 div.button {
+    font-size: 1vw;
+    padding-top: 0.5vh;
+    top: 2vh;
     display: block;
-    position: relative;
-    float: left;
-    width: 30px;
-    padding: 0 20px 0 6px;
-    margin: 10px 0 10px 0;
+    position: absolute;
+    left: 1.5vw;
+    width: 2vw;
+    height: 4.5vh;
     font-weight: 600;
     text-align: center;
-    line-height: 35px;
     color: #fff;
-    border-radius: 5px;
+    border-radius: 1vw;
     transition: all 0.2s;
 }
 
@@ -62,9 +61,9 @@ div.button {
     position: absolute;
     top: 0;
     left: 0;
-    width: 300px;
-    height: 50px;
-    border-radius: 5px;
+    width: 30vw;
+    height: 5vh;
+    border-radius: 1vw;
     transition: all 0.2s;
 }
 
