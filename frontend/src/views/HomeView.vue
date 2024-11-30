@@ -1,97 +1,73 @@
 <template>
-    <div class="col" style="position: absolute; z-index: -9999">
-        <div ref="pageCanvas" class="col-3 pageCanvas gaegu-bold" style="padding-top: 80px; padding-left: 30px; padding-right: 20px">
-            <!-- @click="saveAsImage($event)" -->
-            <!-- <img src="@/assets/logo.png" /> -->
-            {{ 현재페이지줄거리 }}
-        </div>
-    </div>
     <div class="form-container">
-        <form @submit.prevent="handleSubmit">
-            <div class="form-group">
-                <label for="protagonist_name">주인공 이름:</label>
-                <input type="text" id="protagonist_name" v-model="formData.protagonist_name" required />
-            </div>
+        <form @submit.prevent="첫번째페이지생성;" class="h-100">
+            <div class="form-grid h-100 mt-4">
+                <div class="form-group">
+                    <label for="protagonist_name" class="form-label">주인공 이름</label>
+                    <div class="input-container">
+                        <input type="text" id="protagonist_name" v-model="formData.protagonist_name" placeholder="비워둬도 괜찮아요!" required />
+                        <button type="button" class="random-button" @click="randomize('protagonist_name')">랜덤!</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="protagonist_characteristics" class="form-label">주인공 유형</label>
+                    <div class="input-container">
+                        <input type="text" id="protagonist_characteristics" v-model="formData.protagonist_characteristics" required />
+                        <button type="button" class="random-button" @click="randomize('protagonist_characteristics')">랜덤!</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="start_place" class="form-label">시작 장소</label>
+                    <div class="input-container">
+                        <input type="text" id="start_place" v-model="formData.start_place" required />
+                        <button type="button" class="random-button" @click="randomize('start_place')">랜덤!</button>
+                    </div>
+                </div>
 
-            <div class="form-group">
-                <label for="protagonist_characteristics">주인공 성격:</label>
-                <input type="text" id="protagonist_characteristics" v-model="formData.protagonist_characteristics" required />
-            </div>
+                <div class="form-group">
+                    <label for="gender" class="form-label">성별</label>
+                    <div class="gender-options">
+                        <button type="button" class="option-button" :class="{ selected: formData.gender === 'none' }" @click="formData.gender = 'none'">상관 없어요!</button><br />
+                        <button type="button" class="option-button" :class="{ selected: formData.gender === 'male' }" @click="formData.gender = 'male'">남</button>
+                        <button type="button" class="option-button" :class="{ selected: formData.gender === 'female' }" @click="formData.gender = 'female'">여</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="era" class="form-label">시대</label>
+                    <div class="era-options">
+                        <button type="button" class="option-button" :class="{ selected: formData.era === 'none' }" @click="formData.era = 'none'">상관 없어요!</button><br />
+                        <button type="button" class="option-button" :class="{ selected: formData.era === '고전' }" @click="formData.era = '고전'">고대</button>
+                        <button type="button" class="option-button" :class="{ selected: formData.era === '중세' }" @click="formData.era = '중세'">중세</button>
+                        <button type="button" class="option-button" :class="{ selected: formData.era === '현대' }" @click="formData.era = '현대'">현대</button><br />
+                        <button type="button" class="option-button" :class="{ selected: formData.era === '4' }" @click="formData.era = '4'">미래</button>
+                        <button type="button" class="option-button" :class="{ selected: formData.era === '5' }" @click="formData.era = '5'">원시</button>
+                        <button type="button" class="option-button" :class="{ selected: formData.era === '6' }" @click="formData.era = '6'">신화</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="genre" class="form-label">장르</label>
+                    <div class="genre-options">
+                        <button type="button" class="option-button" :class="{ selected: formData.genre === 'none' }" @click="formData.genre = 'none'">상관 없어요!</button><br />
+                        <button type="button" class="option-button" :class="{ selected: formData.genre === '일본풍' }" @click="formData.genre = '일본풍'">판타지</button>
+                        <button type="button" class="option-button" :class="{ selected: formData.genre === '한국풍' }" @click="formData.genre = '한국풍'">마법</button>
+                        <button type="button" class="option-button" :class="{ selected: formData.genre === '중국풍' }" @click="formData.genre = '중국풍'">우화</button><br />
+                        <button type="button" class="option-button" :class="{ selected: formData.genre === '1' }" @click="formData.genre = '1'">미스터리</button>
+                        <button type="button" class="option-button" :class="{ selected: formData.genre === '2' }" @click="formData.genre = '2'">고전</button>
+                        <button type="button" class="option-button" :class="{ selected: formData.genre === '3' }" @click="formData.genre = '3'">자연</button>
+                    </div>
+                </div>
 
-            <div class="form-group">
-                <label for="gender">Gender:</label>
-                <select id="gender" v-model="formData.gender" required>
-                    <option value="female">Female</option>
-                    <option value="male">Male</option>
-                    <option value="other">Other</option>
-                </select>
+                <div class="form-group">
+                    <label for="ending_page_count" class="form-label">엔딩 페이지 수</label>
+                    <input type="number" id="ending_page_count" v-model="formData.ending_page_count" required />
+                </div>
+                <div class="form-group">
+                    <div class="submit-button-container">
+                        <button type="submit" class="submit-button">시작해볼까요?</button>
+                    </div>
+                </div>
             </div>
-
-            <div class="form-group">
-                <label for="age">Age:</label>
-                <input type="number" id="age" v-model="formData.age" required />
-            </div>
-
-            <div class="form-group">
-                <label for="era">시대:</label>
-                <input type="text" id="era" v-model="formData.era" required />
-            </div>
-
-            <div class="form-group">
-                <label for="genre">장르:</label>
-                <input type="text" id="genre" v-model="formData.genre" required />
-            </div>
-
-            <div class="form-group">
-                <label for="start_place">시작 장소</label>
-                <input type="text" id="start_place" v-model="formData.start_place" required />
-            </div>
-
-            <div class="form-group">
-                <label for="theme">Theme:</label>
-                <input type="text" id="theme" v-model="formData.theme" required />
-            </div>
-
-            <div class="form-group">
-                <label for="sentences_per_page">Sentences per Page:</label>
-                <input type="number" id="sentences_per_page" v-model="formData.sentences_per_page" required />
-            </div>
-
-            <div class="form-group">
-                <label for="choices_per_page">Choices per Page:</label>
-                <input type="number" id="choices_per_page" v-model="formData.choices_per_page" required />
-            </div>
-
-            <div class="form-group">
-                <label for="story_mood">Story Mood:</label>
-                <input type="text" id="story_mood" v-model="formData.story_mood" required />
-            </div>
-
-            <div class="form-group">
-                <label for="current_page">Current Page:</label>
-                <input type="number" id="current_page" v-model="formData.current_page" required />
-            </div>
-
-            <div class="form-group">
-                <label for="ending_page_count">Ending Page Count:</label>
-                <input type="number" id="ending_page_count" v-model="formData.ending_page_count" required />
-            </div>
-
-            <div class="form-group">
-                <label for="ending_style">엔딩 스타일</label>
-                <input type="text" id="ending_style" v-model="formData.ending_style" required />
-            </div>
-
-            <button type="submit">Submit</button>
         </form>
-    </div>
-    <div class="row" style="color: black">
-        {{ pages }}<br />
-        선택한책고유번호 {{ 선택한책고유번호 }} 현재페이지번호 {{ 현재페이지번호 }} 마지막페이지번호 {{ 마지막페이지번호 }} 버튼비활성화상태 {{ 버튼비활성화상태 }}
-        <br />
-        이전버튼클릭잠금상태 {{ 이전버튼클릭잠금상태 }} 다음버튼클릭잠금상태 {{ 다음버튼클릭잠금상태 }} 선택지클릭잠금상태 {{ 선택지클릭잠금상태 }}
-        <br />
-        <p style="font-size: 12px">선택한책줄거리 {{ 선택한책줄거리 }}</p>
     </div>
 </template>
 
@@ -101,20 +77,25 @@ export default {
     data() {
         return {
             formData: {
-                protagonist_name: '용태',
-                protagonist_characteristics: '소심한',
-                gender: 'male',
-                age: 20,
-                era: '중세시대', // 시대
-                genre: '일본풍',
-                start_place: '숲속',
+                protagonist_name: '',
+                protagonist_characteristics: '인간',
+                gender: 'none',
+                age: '',
+                era: 'none',
+                genre: 'none',
+                start_place: '집 안',
+                theme: '사랑과 전쟁',
                 sentences_per_page: 5,
                 choices_per_page: 2,
                 story_mood: 'exciting',
-                theme: '사랑과 전쟁',
                 current_page: 1,
-                ending_page_count: 4,
+                ending_page_count: 10,
                 ending_style: 'bad',
+            },
+            randomOptions: {
+                protagonist_name: ['', '용태', '명길', '지우'],
+                protagonist_characteristics: ['사람', '동물', '요정', '물건'],
+                start_place: ['숲속', '마을', '성'],
             },
         };
     },
@@ -124,21 +105,21 @@ export default {
     methods: {
         ...mapMutations(['현재페이지번호감소', '현재페이지번호증가']),
         ...mapActions(['다음줄거리요청액션', 'API테스트액션']),
-        async handleSubmit() {
+        randomize(field) {
+            const options = this.randomOptions[field];
+            if (options) {
+                this.formData[field] = options[Math.floor(Math.random() * options.length)];
+            }
+        },
+        async 첫번째페이지생성() {
             try {
-                // 폼 데이터를 콘솔에 출력
                 console.log(this.formData);
-                // 첫 번째 페이지에 대한 줄거리 및 삽화 요청
                 const 선택한책고유번호 = this.선택한책고유번호;
-
-                // 다음 줄거리와 삽화 생성 요청
                 await this.다음줄거리요청액션({
                     선택한책고유번호,
                     다음페이지번호: 1,
                     formData: this.formData,
                 });
-
-                // Book 라우터로 이동
                 this.$router.push({ name: 'BookGenerate' });
             } catch (error) {
                 console.error('첫 번째 페이지 생성 중 오류 발생:', error);
@@ -148,52 +129,118 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap');
+
+body {
+    font-family: 'Gowun Dodum', sans-serif !important;
+}
+
 .form-container {
-    max-width: 600px;
+    max-width: 50rem; /* 800px */
     margin: 0 auto;
+    border-radius: 0.9375rem; /* 15px */
+    padding: 1.25rem; /* 20px */
+    height: auto;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.875rem 2.5rem; /* 30px 40px */
+    justify-content: center;
 }
 
 .form-group {
-    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
-label {
-    display: block;
-    margin-bottom: 5px;
+.form-label {
+    font-size: 1.5rem; /* 24px */
     font-weight: bold;
 }
 
-input,
-select {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
+.input-container {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem; /* 10px */
+    margin-top: 0.625rem; /* 10px */
+}
+
+input[type='text'],
+input[type='number'] {
+    padding: 0.625rem; /* 10px */
+    border-radius: 0.9375rem; /* 15px */
+    border: 0.0625rem solid #ccc; /* 1px */
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input[type='text']:focus,
+input[type='number']:focus {
+    border-color: #9b59b6;
 }
 
 button {
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
+    padding: 0;
+    border-radius: 1.25rem; /* 20px */
+    transition: transform 0.2s, background-color 0.2s;
 }
 
 button:hover {
-    background-color: #0056b3;
+    transform: scale(1.1);
+    background-color: #7d3c98;
 }
-.pageCanvas {
-    font-size: 1.2vw;
-    color: black;
-    width: 480px;
-    height: 640px;
-    background-image: url('@/assets/paper.jpg'); /* 타일 PNG 이미지 경로 */
-    background-size: contain; /* 타일 이미지를 원래 크기로 사용 */
-    overflow: hidden; /* 넘치는 텍스트 숨김 */
-    white-space: pre-wrap;
-    line-break: loose; /* 한국어 문장의 자연스러운 줄바꿈 */
-    word-break: keep-all; /* 어절 단위로 줄바꿈 */
-    line-height: 1.5; /* 줄 간격을 1.5배로 설정 */
-    letter-spacing: -0.1rem;
+
+.random-button {
+    padding: 0.625rem 0.9375rem; /* 10px 15px */
+    font-size: 0.875rem; /* 14px */
+    background: linear-gradient(135deg, #8e44ad, #9b59b6);
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 1.25rem; /* 20px */
+}
+
+.submit-button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.25rem; /* 20px */
+}
+
+.submit-button {
+    padding: 0.9375rem 1.875rem; /* 15px 30px */
+    font-size: 1.25rem; /* 20px */
+    background: linear-gradient(135deg, #fcdbd8, #ff00e1);
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 1.875rem; /* 30px */
+}
+
+.option-button {
+    padding: 0.625rem 1.25rem; /* 10px 20px */
+    font-size: 1rem; /* 16px */
+    cursor: pointer;
+    border: 0.0625rem solid #ccc; /* 1px */
+    background: linear-gradient(135deg, #cdc0d3, #9b59b6);
+    color: white;
+    border-radius: 1.25rem; /* 20px */
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.option-button:hover {
+    transform: scale(1.1);
+    background: linear-gradient(135deg, #221d3d, #9b59b6);
+    color: white;
+}
+
+.option-button.selected {
+    background: linear-gradient(135deg, #8e44ad, #6a1b9a);
+    color: white;
+    border-color: #8e44ad;
 }
 </style>

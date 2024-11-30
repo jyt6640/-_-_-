@@ -19,13 +19,13 @@
                     </div> -->
                     <div class="flipbook-head" style="position: absolute; top: 10vh; z-index: 2">
                         <transition name="fade">
-                            <Button이전 v-if="!버튼비활성화상태 && 현재페이지번호 != 1 && 이전버튼클릭잠금상태 == false" @click="이전(flipbook)" :disabled="버튼비활성화상태 == true" />
+                            <Button이전 v-if="!버비활성화상태 && 현재페이지번호 != 1 && 이전버튼클릭잠금상태 == false" @click="이전(flipbook)" :disabled="버튼비활성화상태 == true" />
                         </transition>
                         <transition name="fade">
                             <Button다음 v-if="!버튼비활성화상태 && 현재페이지번호 != 마지막페이지번호 && 다음버튼클릭잠금상태 == false" @click="다음(flipbook)" :disabled="버튼비활성화상태 == true" />
                         </transition>
                     </div>
-                    <div class="flipbook-head">
+                    <div class="flipbook-head">튼
                         <transition name="fade">
                             <ButtonTwo v-if="!버튼비활성화상태 && 현재페이지번호 == 마지막페이지번호 && 현재페이지번호 != 5 && 선택지클릭잠금상태 == false" @click="선택지(flipbook, 0)" :선택지="선택한책줄거리[현재페이지번호 - 1].다음선택지[0]" :disabled="버튼비활성화상태 == true" />
                         </transition>

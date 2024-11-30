@@ -10,12 +10,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const app = createApp(App);
 
 // 이벤트 리스너를 수동(passive)으로 설정
-document.addEventListener(
-    'touchstart',
-    function (event) {
-        event.preventDefault();
-    },
-    { passive: true }
-);
+document.addEventListener('touchstart', { passive: true });
 
 createApp(App).use(store).use(router).mount('#app');
