@@ -1,0 +1,6 @@
+*.safetensors
+.env
+
+# Ignore compiled Python files
+__pycache__
+__pycache__/
