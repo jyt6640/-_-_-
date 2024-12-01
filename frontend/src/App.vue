@@ -5,11 +5,12 @@
 <style>
 #app {
     width: 100%;
-    height: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     overflow: hidden;
-    background-color: #ffffff;
     user-select: none; /* 사용자가 텍스트를 선택할 수 없게 합니다 */
-    contenteditable: false; /* 텍스트를 편집할 수 없게 합니다 */
 }
 
 .gaegu-bold {

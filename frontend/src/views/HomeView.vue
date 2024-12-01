@@ -1,7 +1,7 @@
 <template>
     <div class="form-container">
-        <form @submit.prevent="첫번째페이지생성;" class="h-100">
-            <div class="form-grid h-100 mt-4">
+        <form @submit.prevent="첫번째페이지생성()">
+            <div class="form-grid">
                 <div class="form-group">
                     <label for="protagonist_name" class="form-label">주인공 이름</label>
                     <div class="input-container">
@@ -137,11 +137,9 @@ body {
 }
 
 .form-container {
-    max-width: 50rem; /* 800px */
-    margin: 0 auto;
+    width: 60rem; /* 800px */
     border-radius: 0.9375rem; /* 15px */
     padding: 1.25rem; /* 20px */
-    height: auto;
 }
 
 .form-grid {
