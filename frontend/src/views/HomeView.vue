@@ -1,4 +1,9 @@
 <template>
+    <!-- 캔버스용 숨김 div 추가 -->
+    <div style="position: absolute; left: -9999px; z-index: -9999">
+        <div class="pageCanvas gaegu-bold" style="padding-top: 80px; padding-left: 30px; padding-right: 20px"></div>
+    </div>
+
     <div class="form-container">
         <form @submit.prevent="첫번째페이지생성()">
             <div class="form-grid">
@@ -23,7 +28,6 @@
                         <button type="button" class="random-button" @click="randomize('start_place')">랜덤!</button>
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label for="gender" class="form-label">성별</label>
                     <div class="gender-options">
@@ -56,7 +60,6 @@
                         <button type="button" class="option-button" :class="{ selected: formData.genre === '3' }" @click="formData.genre = '3'">자연</button>
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label for="ending_page_count" class="form-label">엔딩 페이지 수</label>
                     <input type="number" id="ending_page_count" v-model="formData.ending_page_count" required />
@@ -80,14 +83,12 @@ export default {
                 protagonist_name: '',
                 protagonist_characteristics: '인간',
                 gender: 'none',
-                age: '',
                 era: 'none',
                 genre: 'none',
                 start_place: '집 안',
-                theme: '사랑과 전쟁',
-                sentences_per_page: 5,
                 choices_per_page: 2,
                 story_mood: 'exciting',
+                theme: '사랑과 전쟁',
                 current_page: 1,
                 ending_page_count: 10,
                 ending_style: 'bad',
@@ -104,7 +105,7 @@ export default {
     },
     methods: {
         ...mapMutations(['현재페이지번호감소', '현재페이지번호증가']),
-        ...mapActions(['다음줄거리요청액션', 'API테스트액션']),
+        ...mapActions(['첫번째줄거리요청액션', 'API테스트액션']),
         randomize(field) {
             const options = this.randomOptions[field];
             if (options) {
@@ -113,11 +114,10 @@ export default {
         },
         async 첫번째페이지생성() {
             try {
-                console.log(this.formData);
+                console.log('[제출한 폼 데이터]', this.formData); // 객체는 그대로 출력하는 게 더 보기 좋습니다
                 const 선택한책고유번호 = this.선택한책고유번호;
-                await this.다음줄거리요청액션({
+                await this.첫번째줄거리요청액션({
                     선택한책고유번호,
-                    다음페이지번호: 1,
                     formData: this.formData,
                 });
                 this.$router.push({ name: 'BookGenerate' });
@@ -134,6 +134,21 @@ export default {
 
 body {
     font-family: 'Gowun Dodum', sans-serif !important;
+}
+
+.pageCanvas {
+    font-size: 1.3vw;
+    color: black;
+    width: 480px;
+    height: 640px;
+    background-image: url('@/assets/paper.jpg'); /* 타일 PNG 이미지 경로 */
+    background-size: contain; /* 타일 이미지를 원래 크기로 사용 */
+    overflow: hidden; /* 넘치는 텍스트 숨김 */
+    white-space: pre-wrap;
+    line-break: loose; /* 한국어 문장의 자연스러운 줄바꿈 */
+    word-break: keep-all; /* 어절 단위로 줄바꿈 */
+    line-height: 1.5; /* 줄 간격을 1.5배로 설정 */
+    letter-spacing: -0.1rem;
 }
 
 .form-container {

@@ -78,27 +78,34 @@ app.use(express.static(path.join(__dirname, 'public')));
 // }
 
 app.post('/save_image/', async (req, res) => {
-    const { 선택한책고유번호, 다음페이지번호, image_data } = req.body;
+    console.log(`
+[이미지 저장 요청 수신]
+선택한책고유번호: ${req.body.선택한책고유번호}
+생성할페이지번호: ${req.body.생성할페이지번호}
+이미지 데이터 존재 여부: ${!!req.body.image_data}
+`);
+
+    const { 선택한책고유번호, 생성할페이지번호, image_data } = req.body;
 
     if (!image_data) {
         return res.status(400).send('Image data is required');
     }
-    const filename = `${선택한책고유번호}-${다음페이지번호}-1.png`;
-    const filePath = path.join(__dirname, 'public', 'books', filename);
-
-    // Base64 인코딩된 이미지 데이터를 Buffer로 변환
-    const base64Data = image_data.replace(/^data:image\/png;base64,/, ''); // 파일 형식에 맞게 조정 필요
-    const buffer = Buffer.from(base64Data, 'base64');
 
     try {
+        const filename = `${선택한책고유번호}-${생성할페이지번호}-1.png`;
+        const filePath = path.join(__dirname, 'public', 'books', filename);
+
+        // base64 데이터를 버퍼로 변환
+        const buffer = Buffer.from(image_data, 'base64');
+
         // 기존 파일이 있으면 삭제
         if (fs.existsSync(filePath)) {
             await fs.promises.unlink(filePath);
             console.log('기존 파일 삭제:', filePath);
         }
-        console.log('파일 저장:', filePath);
 
-        await fs.promises.writeFile(filePath, buffer, 'base64'); //
+        console.log('파일 저장:', filePath);
+        await fs.promises.writeFile(filePath, buffer);
         res.json({ message: '이미지 저장 성공', filename: filename });
     } catch (err) {
         console.error('이미지 저장 중 오류 발생:', err);
@@ -183,13 +190,17 @@ app.post('/nextTxt', async (req, res) => {
 
 // 이미지 데이터를 받아서 서버에 저장하는 엔드포인트 라우터
 app.post('/save-canvas', async (req, res) => {
+    console.log('수신된 요청 데이터:', {
+        선택한책고유번호: req.body.선택한책고유번호,
+        생성할페이지번호: req.body.생성할페이지번호,
+    });
     const 선택한책고유번호 = req.body.선택한책고유번호;
-    const 다음페이지번호 = req.body.새로운페이지번호;
+    const 생성할페이지번호 = req.body.생성할페이지번호;
     const 이미지데이터 = req.body.imageData;
 
     const base64Data = 이미지데이터.replace(/^data:image\/png;base64,/, '');
     const dirPath = path.join(__dirname, 'public', 'books');
-    const uniqueFilename = `${선택한책고유번호}-${다음페이지번호}-2.png`;
+    const uniqueFilename = `${선택한책고유번호}-${생성할페이지번호}-2.png`;
     const filePath = path.join(dirPath, uniqueFilename);
 
     try {
